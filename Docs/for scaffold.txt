@@ -1,0 +1,23 @@
+//Identity
+Add-Migration InitIdentity -Project COLLECTION_MANAGEMENT_REPOSITORY -StartupProject COLLECTION_MANAGEMENT_API -Context identity_dbcontext
+Update-Database -Project COLLECTION_MANAGEMENT_REPOSITORY -StartupProject COLLECTION_MANAGEMENT_API -Context identity_dbcontext
+
+
+//normal
+Scaffold-DbContext "Server=103.159.37.173;Database=cm_dev_db;user id=usr_rakib;password=I7FxJShvYri5pbCJVskQ;SSL Mode=None" Pomelo.EntityFrameworkCore.MySql -context am_dbcontext -OutputDir Models -force
+
+
+//restore after re-scaffold
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+	if (!optionsBuilder.IsConfigured)
+	{
+		var env_name = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+		IConfigurationRoot configuration = new ConfigurationBuilder()
+	   .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+	   .AddJsonFile($"appsettings.{env_name}.json")
+	   .Build();
+		var config = configuration.GetConnectionString("DefaultConnection");
+		optionsBuilder.UseMySql(config, ServerVersion.AutoDetect(config));
+	}
+}

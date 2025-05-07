@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Program - Copy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_ENTITIES\COLLECTION_MANAGEMENT_ENTITIES.csproj" />
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_REPOSITORY\COLLECTION_MANAGEMENT_REPOSITORY.csproj" />
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_SERVICE\COLLECTION_MANAGEMENT_SERVICE.csproj" />
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_UTILITY\COLLECTION_MANAGEMENT_UTILITY.csproj" />
+  </ItemGroup>
+
+</Project>

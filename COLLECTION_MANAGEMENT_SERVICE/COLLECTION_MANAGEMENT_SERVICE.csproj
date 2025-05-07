@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Filters\**" />
+    <EmbeddedResource Remove="Filters\**" />
+    <None Remove="Filters\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_ENTITIES\COLLECTION_MANAGEMENT_ENTITIES.csproj" />
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_REPOSITORY\COLLECTION_MANAGEMENT_REPOSITORY.csproj" />
+    <ProjectReference Include="..\COLLECTION_MANAGEMENT_UTILITY\COLLECTION_MANAGEMENT_UTILITY.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+  </ItemGroup>
+
+</Project>
