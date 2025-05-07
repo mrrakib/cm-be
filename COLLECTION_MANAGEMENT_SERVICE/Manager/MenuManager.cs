@@ -61,7 +61,6 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 {
                     Name = menuRequestEntity.menu_name.Trim(),
                     Url = menuRequestEntity.menu_url.Trim(),
-                    ClientUrl = menuRequestEntity.client_url.Trim(),
                     ModuleId = menuRequestEntity.module_id,
                     CreatedBy = long.Parse(currentUserId)
                 };
@@ -121,7 +120,6 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     menu_id = menu.Id,
                     menu_name = menu.Name,
                     menu_url = menu.Url,
-                    client_url = menu.ClientUrl,
                     module_name = module.Name,
                     module_id = module.Id,
                 };
@@ -220,7 +218,6 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 menu.Name = menuRequestEntity.menu_name;
                 menu.ModuleId = menuRequestEntity.module_id;
                 menu.Url = menuRequestEntity.menu_url;
-                menu.ClientUrl = menuRequestEntity.client_url;
                 menu.UpdatedBy = long.Parse(current_user_id);
                 menu.UpdatedAt = DateTime.Now;
                 _unitOfWork.Menus.Update(menu);

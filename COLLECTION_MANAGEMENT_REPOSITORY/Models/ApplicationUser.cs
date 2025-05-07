@@ -11,5 +11,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Models
     {
         public string FullName { get; set; } = string.Empty;
         public string? ContactNo { get; set; }
+        public long? OrganizationId { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
         }
 
         [TypeFilter(typeof(AuthorizationFilterAttribute), Order = 1)]
-        [MenuAuthorize("user/get-all")]
+        [MenuAuthorize("user/get-all", Order = 2)]
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll(int page, int pageSize)
         {

@@ -25,19 +25,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
 
         public async Task<Tuple<List<UserResponseEntity>, int>> GetAllPagedAsync(int pageNumber, int pageSize)
         {
-            //var query = from u in _dbContext.Users
-            //            join ur in _dbContext.UserRoles on u.Id equals ur.UserId into userRoles
-            //            from userRole in userRoles.DefaultIfEmpty()
-            //            join r in _dbContext.Roles on 
-            //            select new UserResponseEntity
-            //            {
-            //                id = u.Id,
-            //                user_name = u.UserName,
-            //                full_name = u.FullName,
-            //                email = u.Email,
-            //                gender = u.Gender.ToString(),
-            //                dob = u.DateOfBirth != null ? u.DateOfBirth.Value.ToString("yyyy-dd-MM") : string.Empty
-            //            };
             var query = _dbContext.Users
                     .GroupJoin(_dbContext.UserRoles,
                         user => user.Id,
@@ -52,14 +39,23 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                         (temp, roles) => new { temp.user, temp.userRole, roles })
                     .SelectMany(
                         temp => temp.roles.DefaultIfEmpty(),
-                        (temp, role) => new UserResponseEntity
+                        (temp, role) => new { temp.user, temp.userRole, role })
+                    .GroupJoin(_dbContext.Organizations,
+                        temp => temp.user.OrganizationId,
+                        org => org.Id,
+                        (temp, orgs) => new { temp.user, temp.userRole, temp.role, orgs })
+                    .SelectMany(
+                        temp => temp.orgs.DefaultIfEmpty(),
+                        (temp, org) => new UserResponseEntity
                         {
                             id = temp.user.Id,
                             user_name = temp.user.UserName,
                             full_name = temp.user.FullName,
                             email = temp.user.Email,
                             contact_no = temp.user.ContactNo,
-                            role = role != null ? role.Name : string.Empty
+                            role = temp.role != null ? temp.role.Name : string.Empty,
+                            organization_id = temp.user.OrganizationId,
+                            organization_name = org != null ? org.Name : string.Empty
                         });
             int totalCount = await query.CountAsync();
             var users = await query

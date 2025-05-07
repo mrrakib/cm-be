@@ -52,7 +52,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                                       id = mp.Id,
                                       menu_name = mn.Name,
                                       menu_url = mn.Url,
-                                      client_url = mn.ClientUrl,
                                       role_id = rp.Id,
                                       role_name = rp.Name,
                                   };

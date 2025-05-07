@@ -9,7 +9,8 @@ namespace COLLECTION_MANAGEMENT_ENTITIES.ResponseEntity
     public class UserResponseEntity
     {
         public long id { get; set; }
-        public long? company_id { get; set; }
+        public long? organization_id { get; set; }
+        public string? organization_name { get; set; }
         public string? user_name { get; set; }
         public string? full_name { get; set; }
         public string? role { get; set; }

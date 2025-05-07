@@ -4,6 +4,7 @@ using COLLECTION_MANAGEMENT_REPOSITORY.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace COLLECTION_MANAGEMENT_REPOSITORY.Migrations
 {
     [DbContext(typeof(identity_dbcontext))]
-    partial class identity_dbcontextModelSnapshot : ModelSnapshot
+    [Migration("20250507085719_UserPropAlterAddOrgId")]
+    partial class UserPropAlterAddOrgId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

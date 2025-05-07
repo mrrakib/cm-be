@@ -28,7 +28,18 @@ namespace COLLECTION_MANAGEMENT_API.Filters
             var user = context.HttpContext.User;
             if (!user.Identity.IsAuthenticated)
             {
-                context.Result = new UnauthorizedResult();
+                context.Result = new JsonResult(new CommonResponse
+                {
+                    status_code = "401",
+                    error_messages = new List<CommonResponse.ErrorResponseData>
+                    {
+                        new CommonResponse.ErrorResponseData
+                        {
+                            error_code = "8001",
+                            error_message = "Unauthorized Access."
+                        }
+                    }
+                });
                 return;
             }
 

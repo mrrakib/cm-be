@@ -36,7 +36,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                             menu_id = mn.Id,
                             menu_name = mn.Name,
                             menu_url = mn.Url,
-                            client_url = mn.ClientUrl,
                             module_name = m.Name,
                             module_id = m.Id
                         };
@@ -55,7 +54,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                             menu_id = mn.Id,
                             menu_name = mn.Name,
                             menu_url = mn.Url,
-                            client_url = mn.ClientUrl,
                             module_name = m.Name,
                             module_id = m.Id
                         };
@@ -76,7 +74,6 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                             menu_id = mn.Id,
                             menu_name = mn.Name,
                             menu_url = mn.Url,
-                            client_url = mn.ClientUrl,
                             module_name = m.Name,
                             module_id = m.Id,
                             is_permitted = permission != null

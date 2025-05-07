@@ -16,6 +16,8 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Models
         {
         }
 
+        public DbSet<Organization> Organizations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,6 +29,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Models
             modelBuilder.Entity<IdentityUserLogin<long>>().ToTable("user_logins");
             modelBuilder.Entity<IdentityUserToken<long>>().ToTable("user_tokens");
             modelBuilder.Entity<IdentityRoleClaim<long>>().ToTable("role_claims");
+            modelBuilder.Entity<Organization>().ToTable("organizations");
         }
     }
 }

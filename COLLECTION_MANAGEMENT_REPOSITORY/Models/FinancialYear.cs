@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace COLLECTION_MANAGEMENT_REPOSITORY.Models;
 
-public partial class Menu
+public partial class FinancialYear
 {
     public long Id { get; set; }
 
     public string Name { get; set; } = null!;
 
-    public string Url { get; set; } = null!;
+    public DateOnly FromDate { get; set; }
 
-    public long ModuleId { get; set; }
+    public DateOnly ToDate { get; set; }
+
+    public int Status { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -20,8 +22,4 @@ public partial class Menu
     public DateTime? UpdatedAt { get; set; }
 
     public long? UpdatedBy { get; set; }
-
-    public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>();
-
-    public virtual Module Module { get; set; } = null!;
 }
