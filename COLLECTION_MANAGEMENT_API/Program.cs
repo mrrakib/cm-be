@@ -199,24 +199,29 @@ app.UseRouting();
 app.UseHttpsRedirection();
 
 // Configure static files with explicit physical file provider
-var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-if (Directory.Exists(wwwrootPath))
-{
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(wwwrootPath)
-    });
+#region enable if deployed SPA: Angular/React/Vue
+//var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+//if (Directory.Exists(wwwrootPath))
+//{
+//    app.UseStaticFiles(new StaticFileOptions
+//    {
+//        FileProvider = new PhysicalFileProvider(wwwrootPath)
+//    });
 
-    // Configure default files (index.html)
-    app.UseDefaultFiles(new DefaultFilesOptions
-    {
-        DefaultFileNames = new List<string> { "index.html" },
-        FileProvider = new PhysicalFileProvider(wwwrootPath)
-    });
+//    // Configure default files (index.html)
+//    app.UseDefaultFiles(new DefaultFilesOptions
+//    {
+//        DefaultFileNames = new List<string> { "index.html" },
+//        FileProvider = new PhysicalFileProvider(wwwrootPath)
+//    });
 
-    // Configure SPA fallback for client-side routing
-    app.MapFallbackToFile("index.html");
-}
+//    // Configure SPA fallback for client-side routing
+//    app.MapFallbackToFile("index.html");
+//} 
+#endregion
+
+app.UseStaticFiles();
+app.UseDefaultFiles();
 
 app.UseCors(x => x
 //.WithOrigins("http://localhost:4200")
@@ -232,6 +237,9 @@ app.UseSession();
 app.UseSerilogRequestLogging();
 app.MapRazorPages();
 app.UseHttpLogging();
-app.MapControllers();
+//app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

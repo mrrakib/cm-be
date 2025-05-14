@@ -28,4 +28,12 @@
     <ProjectReference Include="..\COLLECTION_MANAGEMENT_UTILITY\COLLECTION_MANAGEMENT_UTILITY.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+
 </Project>
