@@ -68,9 +68,8 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                 user_name = u.user_name,
                 full_name = u.full_name,
                 email = u.email,
-                gender = u.gender,
-                gender_name = !string.IsNullOrWhiteSpace(u.gender_name) ? Enum.GetName(typeof(CommonEnum.Gender), int.Parse(u.gender_name)) : string.Empty,
-                birth_date = u.birth_date
+                birth_date = u.birth_date,
+                organization_name = u.organization_name,
             }).ToList();
             return new Tuple<List<UserResponseEntity>, int>(users, totalCount);
         }

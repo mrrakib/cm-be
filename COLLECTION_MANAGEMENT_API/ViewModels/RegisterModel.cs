@@ -16,5 +16,6 @@ namespace COLLECTION_MANAGEMENT_API.ViewModels
 
         public string? role { get; set; }
         public string? contact_no { get; set; }
+        public  long? org_id { get; set; }
     }
 }

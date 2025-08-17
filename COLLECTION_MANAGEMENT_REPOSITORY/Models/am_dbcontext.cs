@@ -17,9 +17,15 @@ public partial class am_dbcontext : DbContext
     {
     }
 
+    public virtual DbSet<Collection> Collections { get; set; }
+
+    public virtual DbSet<CollectionType> CollectionTypes { get; set; }
+
     public virtual DbSet<EfmigrationsHistory> EfmigrationsHistories { get; set; }
 
     public virtual DbSet<FinancialYear> FinancialYears { get; set; }
+
+    public virtual DbSet<Member> Members { get; set; }
 
     public virtual DbSet<Menu> Menus { get; set; }
 
@@ -43,6 +49,8 @@ public partial class am_dbcontext : DbContext
 
     public virtual DbSet<UserToken> UserTokens { get; set; }
 
+    public virtual DbSet<Village> Villages { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -62,6 +70,66 @@ public partial class am_dbcontext : DbContext
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
+
+        modelBuilder.Entity<Collection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("collections");
+
+            entity.HasIndex(e => e.InvoiceNo, "collections_invoice_no_IDX");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BillAmount)
+                .HasPrecision(10, 4)
+                .HasColumnName("bill_amount");
+            entity.Property(e => e.CollectionAmount)
+                .HasPrecision(10, 4)
+                .HasColumnName("collection_amount");
+            entity.Property(e => e.CollectionDate)
+                .HasColumnType("datetime")
+                .HasColumnName("collection_date");
+            entity.Property(e => e.CollectionTypeId).HasColumnName("collection_type_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.FinancialYearId).HasColumnName("financial_year_id");
+            entity.Property(e => e.InvoiceNo)
+                .HasMaxLength(100)
+                .HasColumnName("invoice_no");
+            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.Month).HasColumnName("month");
+            entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.Year).HasColumnName("year");
+        });
+
+        modelBuilder.Entity<CollectionType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("collection_types");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.Description)
+                .HasColumnType("text")
+                .HasColumnName("description");
+            entity.Property(e => e.IsMonthly).HasColumnName("is_monthly");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+        });
 
         modelBuilder.Entity<EfmigrationsHistory>(entity =>
         {
@@ -97,6 +165,39 @@ public partial class am_dbcontext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+        });
+
+        modelBuilder.Entity<Member>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("members");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Address)
+                .HasMaxLength(255)
+                .HasColumnName("address");
+            entity.Property(e => e.ContactNo)
+                .HasMaxLength(30)
+                .HasColumnName("contact_no");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.OrgId).HasColumnName("org_id");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.VillageId).HasColumnName("village_id");
         });
 
         modelBuilder.Entity<Menu>(entity =>
@@ -321,6 +422,33 @@ public partial class am_dbcontext : DbContext
             entity.ToTable("user_tokens");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserTokens).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<Village>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("village");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Country)
+                .HasMaxLength(100)
+                .HasColumnName("country");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.District)
+                .HasMaxLength(200)
+                .HasColumnName("district");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
         });
 
         OnModelCreatingPartial(modelBuilder);

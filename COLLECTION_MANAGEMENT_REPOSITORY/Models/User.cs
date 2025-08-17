@@ -39,6 +39,8 @@ public partial class User
 
     public string? ContactNo { get; set; }
 
+    public long? OrganizationId { get; set; }
+
     public virtual ICollection<UserClaim> UserClaims { get; set; } = new List<UserClaim>();
 
     public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();

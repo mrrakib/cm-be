@@ -19,5 +19,6 @@ namespace COLLECTION_MANAGEMENT_ENTITIES.ResponseEntity
         public string? birth_date { get; set; }
         public int? gender { get; set; }
         public string? gender_name { get; set; }
+        public string? org_name { get; set; }
     }
 }

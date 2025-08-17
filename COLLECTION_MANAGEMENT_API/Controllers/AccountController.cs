@@ -52,13 +52,15 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
             CommonResponse response = new();
             try
             {
+                _logger.Information($"AccountController/Register ==> request entity: {WebUtility.HtmlEncode(JsonConvert.SerializeObject(model, Formatting.None))}");
 
                 var user = new ApplicationUser
                 {
                     UserName = model.email,
                     Email = model.email,
                     FullName = model.full_name ?? string.Empty,
-                    ContactNo = model.contact_no
+                    ContactNo = model.contact_no,
+                    OrganizationId = model.org_id
                 };
 
                 var result = await _userManager.CreateAsync(user, model.password);
@@ -118,6 +120,7 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
 
                 if (result.RequiresTwoFactor)
                 {
+                    _logger.Information($"AccountController/Login ==> Two-factor authentication required for user {user.UserName}");
                     return Ok(await _commonManager.HandleResponse(StatusCodes.Status206PartialContent, (int)CommonEnum.ResponseCodes.TwoFactorRequired, response));
                 }
 
