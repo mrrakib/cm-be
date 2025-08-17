@@ -26,7 +26,8 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         IModuleRepository Modules { get; }
         IMenuRepository Menus { get; }
         IMenuPermissionRepository MenuPermissions { get; }
-        
+        IOrganizationRepository Organizations { get; }
+
     }
 
     public class UnitOfWork : IUnitOfWork
@@ -50,7 +51,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
             Modules = new ModuleRepository(_context);
             Menus = new MenuRepository(_context);
             MenuPermissions = new MenuPermissionRepository(_context);
-
+            Organizations = new OrganizationRepository(_context);
         }
         public void SetActiveContext(CommonEnum.ContextName contextName)
         {
@@ -139,7 +140,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         #endregion
 
         #region Normal repos
-
+        public IOrganizationRepository Organizations { get; }
         #endregion
 
     }

@@ -134,7 +134,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
         }
 
 
-
+        public string? GetCurrentUserId()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst("user_id")?.Value;
+        }
         private string GenerateRandomDigits(int length)
         {
             Random random = new Random();
