@@ -15,6 +15,9 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
                 services.AddScoped<ICommonRepository, CommonRepository>();
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+
+                services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
                 return services;
             }
             catch (Exception ex)
@@ -26,8 +29,8 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
 
         public static IServiceCollection AddBusinessLogicServices(this IServiceCollection services)
         {
-			try
-			{
+            try
+            {
                 services.AddScoped<ICommonManager, CommonManager>();
                 services.AddScoped<IResponseMessageCacheManager, ResponseMessageCacheManager>();
 
@@ -36,15 +39,16 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
                 services.AddScoped<IModuleManager, ModuleManager>();
                 services.AddScoped<IMenuManager, MenuManager>();
                 services.AddScoped<IMenuPermissionManager, MenuPermissionManager>();
-                services.AddScoped<IUserManager, UserManager >();
+                services.AddScoped<IUserManager, UserManager>();
+                services.AddScoped<IOrganizationManager, OrganizationManager>();
 
                 return services;
             }
-			catch (Exception ex)
-			{
+            catch (Exception ex)
+            {
 
-				throw;
-			}
+                throw;
+            }
         }
     }
 }
