@@ -18,6 +18,7 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
 
                 services.AddScoped<IOrganizationRepository, OrganizationRepository>();
                 services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+                services.AddScoped<ICollectionTypeRepository, CollectionTypeRepository>();
 
                 return services;
             }
@@ -43,6 +44,7 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
                 services.AddScoped<IUserManager, UserManager>();
                 services.AddScoped<IOrganizationManager, OrganizationManager>();
                 services.AddScoped<IFinancialYearManager, FinancialYearManager>();
+                services.AddScoped<ICollectionTypeManager, CollectionTypeManager>();
 
                 return services;
             }
