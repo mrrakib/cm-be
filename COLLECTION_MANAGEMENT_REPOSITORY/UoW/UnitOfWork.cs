@@ -27,6 +27,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         IMenuRepository Menus { get; }
         IMenuPermissionRepository MenuPermissions { get; }
         IOrganizationRepository Organizations { get; }
+        IFinancialYearRepository FinancialYears { get; }
 
     }
 
@@ -52,6 +53,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
             Menus = new MenuRepository(_context);
             MenuPermissions = new MenuPermissionRepository(_context);
             Organizations = new OrganizationRepository(_context);
+            FinancialYears = new FinancialYearRepository(_context);
         }
         public void SetActiveContext(CommonEnum.ContextName contextName)
         {
@@ -141,6 +143,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
 
         #region Normal repos
         public IOrganizationRepository Organizations { get; }
+        public IFinancialYearRepository FinancialYears { get; }
         #endregion
 
     }

@@ -16,22 +16,22 @@ using System.Threading.Tasks;
 
 namespace COLLECTION_MANAGEMENT_SERVICE.Manager
 {
-    public interface IOrganizationManager
+    public interface IFinancialYearManager
     {
         Task<CommonResponse> GetAllAsync(int page, int pageSize);
-        Task<CommonResponse> CreateAsync(OrganizationRequestEntity organizationRequestEntity);
+        Task<CommonResponse> CreateAsync(FinYearRequestEntity finYearRequestEntity);
         Task<CommonResponse> GetByIdAsync(long id);
-        Task<CommonResponse> UpdateAsync(OrganizationRequestEntity organizationRequestEntity);
+        Task<CommonResponse> UpdateAsync(FinYearRequestEntity finYearRequestEntity);
         Task<CommonResponse> DeleteAsync(long id);
         Task<CommonResponse> GetForDDL();
     }
-    public class OrganizationManager : IOrganizationManager
+    public class FinancialYearManager : IFinancialYearManager
     {
         public readonly IUnitOfWork _unitOfWork;
         private readonly ICommonManager _commonManager;
         private readonly ILogger _logger;
 
-        public OrganizationManager(IUnitOfWork unitOfWork, ICommonManager commonManager, ILogger logger)
+        public FinancialYearManager(IUnitOfWork unitOfWork, ICommonManager commonManager, ILogger logger)
         {
             _unitOfWork = unitOfWork;
             _commonManager = commonManager;
@@ -43,20 +43,20 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                _logger.Information($"OrganizationManager/GetAllAsync ==> request entity: page: {page}, pageSize: {pageSize}");
-                Tuple<List<OrganizationResponseEntity>, int> menus = await _unitOfWork.Organizations.GetAllPagedAsync(page, pageSize);
-                response.data = menus.Item1;
-                response.total_items = menus.Item2;
+                _logger.Information($"FinancialYearManager/GetAllAsync ==> request entity: page: {page}, pageSize: {pageSize}");
+                Tuple<List<FinYearResponseEntity>, int> finYears = await _unitOfWork.FinancialYears.GetAllPagedAsync(page, pageSize);
+                response.data = finYears.Item1;
+                response.total_items = finYears.Item2;
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/GetAllAsync ==> Error fetching orgs: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/GetAllAsync ==> Error fetching orgs: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
 
-        public async Task<CommonResponse> CreateAsync(OrganizationRequestEntity organizationRequestEntity)
+        public async Task<CommonResponse> CreateAsync(FinYearRequestEntity finYearRequestEntity)
         {
             CommonResponse commonResponse = new();
             try
@@ -67,23 +67,22 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.UserNotFound, commonResponse);
                 }
 
-                if (await _unitOfWork.Organizations.OrgExistsAsync(organizationRequestEntity.org_name))
+                if (await _unitOfWork.FinancialYears.FinYearExistsAsync(finYearRequestEntity.fin_name))
                 {
-                    _logger.Information($"OrganizationManager/CreateAsync ==> organization exists with the given name: {organizationRequestEntity.org_name}");
+                    _logger.Information($"FinancialYearManager/CreateAsync ==> financial year exists with the given name: {finYearRequestEntity.fin_name}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.AlreadyExists, commonResponse);
                 }
 
 
-                Organization organization = new Organization
+                FinancialYear finYearEntity = new FinancialYear
                 {
-                    Name = organizationRequestEntity.org_name.Trim(),
-                    MobileNo = organizationRequestEntity.mobile_no?.Trim(),
-                    Email = organizationRequestEntity.email?.Trim(),
-                    Address = organizationRequestEntity.address?.Trim(),
+                    Name = finYearRequestEntity.fin_name.Trim(),
+                    FromDate = finYearRequestEntity.from_date,
+                    ToDate = finYearRequestEntity.to_date,
                     CreatedBy = long.Parse(currentUserId)
                 };
 
-                await _unitOfWork.Organizations.AddAsync(organization);
+                await _unitOfWork.FinancialYears.AddAsync(finYearEntity);
                 if (await _unitOfWork.CompleteAsync() == 0)
                 {
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.FailedToCreate, commonResponse);
@@ -93,7 +92,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/CreateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/CreateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, commonResponse);
             }
         }
@@ -102,32 +101,31 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                Organization? org = await _unitOfWork.Organizations.GetByIdAsync(id);
-                if (org == null)
+                FinancialYear? finYear = await _unitOfWork.FinancialYears.GetByIdAsync(id);
+                if (finYear == null)
                 {
-                    _logger.Error($"OrganizationManager/CreateAsync ==> Organization not found with id: {id}");
+                    _logger.Error($"FinancialYearManager/CreateAsync ==> Financial Year not found with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
-                _logger.Information($"OrganizationManager/CreateAsync ==> Organization found with id: {id}, Name: {org.Name}");
-                response.data = new OrganizationResponseEntity
+                _logger.Information($"FinancialYearManager/CreateAsync ==> Financial Year found with id: {id}, Name: {finYear.Name}");
+                response.data = new FinYearResponseEntity
                 {
-                    id = org.Id,
-                    org_name = org.Name,
-                    mobile_no = org.MobileNo,
-                    email = org.Email,
-                    address = org.Address,
-                    status = Enum.GetName(typeof(CommonEnum.Status), org.Status)
+                    id = finYear.Id,
+                    fin_name = finYear.Name,
+                    from_date = finYear.FromDate.ToString("dd MMM, yyyy"),
+                    to_date = finYear.ToDate.ToString("dd MMM, yyyy"),
+                    status = Enum.GetName(typeof(CommonEnum.Status), finYear.Status)
                 };
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/CreateAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/CreateAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
 
-        public async Task<CommonResponse> UpdateAsync(OrganizationRequestEntity organizationRequestEntity)
+        public async Task<CommonResponse> UpdateAsync(FinYearRequestEntity finYearRequestEntity)
         {
             CommonResponse response = new();
             try
@@ -137,30 +135,29 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 {
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.UserNotFound, response);
                 }
-                Organization? organization = await _unitOfWork.Organizations.GetByIdAsync(organizationRequestEntity.id);
-                if (organization == null)
+                FinancialYear? finYear = await _unitOfWork.FinancialYears.GetByIdAsync(finYearRequestEntity.id);
+                if (finYear == null)
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> no organization found with id: {organizationRequestEntity.id}");
+                    _logger.Information($"FinancialYearManager/UpdateAsync ==> no financial year found with id: {finYearRequestEntity.id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
-                if (await _unitOfWork.Organizations.OrgExistsAsync(organizationRequestEntity.org_name, organization.Id))
+                if (await _unitOfWork.FinancialYears.FinYearExistsAsync(finYearRequestEntity.fin_name, finYear.Id))
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> organization exists with the given name: {organizationRequestEntity.org_name}");
+                    _logger.Information($"FinancialYearManager/UpdateAsync ==> financial year exists with the given name: {finYearRequestEntity.fin_name}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.AlreadyExists, response);
                 }
 
-                organization.Name = organizationRequestEntity.org_name;
-                organization.MobileNo = organizationRequestEntity.mobile_no;
-                organization.Email = organizationRequestEntity.email;
-                organization.Address = organizationRequestEntity.address;
-                organization.UpdatedBy = long.Parse(current_user_id);
-                organization.UpdatedAt = DateTime.Now;
-                _unitOfWork.Organizations.Update(organization);
+                finYear.Name = finYearRequestEntity.fin_name;
+                finYear.FromDate = finYearRequestEntity.from_date;
+                finYear.ToDate = finYearRequestEntity.to_date;
+                finYear.UpdatedBy = long.Parse(current_user_id);
+                finYear.UpdatedAt = DateTime.Now;
+                _unitOfWork.FinancialYears.Update(finYear);
 
                 if (await _unitOfWork.CompleteAsync() == 0)
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> failed to update organization with id: {organizationRequestEntity.id}");
+                    _logger.Information($"FinancialYearManager/UpdateAsync ==> failed to update financial year with id: {finYearRequestEntity.id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.FailedToUpdate, response);
                 }
 
@@ -168,7 +165,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/UpdateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/UpdateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -178,10 +175,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                var organization = await _unitOfWork.Organizations.GetByIdAsync(id);
-                if (organization == null)
+                var finYear = await _unitOfWork.FinancialYears.GetByIdAsync(id);
+                if (finYear == null)
                 {
-                    _logger.Information($"OrganizationManager/DeleteAsync ==> no organization found with id: {id}");
+                    _logger.Information($"FinancialYearManager/DeleteAsync ==> no financial year found with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
@@ -192,10 +189,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 //} 
                 #endregion
 
-                _unitOfWork.Organizations.Delete(organization);
+                _unitOfWork.FinancialYears.Delete(finYear);
                 if (await _unitOfWork.CompleteAsync() == 0)
                 {
-                    _logger.Information($"OrganizationManager/DeleteAsync ==> failed to delete organization with id: {id}");
+                    _logger.Information($"FinancialYearManager/DeleteAsync ==> failed to delete financial year with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.FailedToDelete, response);
                 }
 
@@ -203,7 +200,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/DeleteAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/DeleteAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -213,14 +210,14 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                List<DropdownResponseEntity> data =  await _unitOfWork.Organizations.GetForDDL();
+                List<DropdownResponseEntity> data =  await _unitOfWork.FinancialYears.GetForDDL();
                 response.data = data;
 
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/GetForDDL ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"FinancialYearManager/GetForDDL ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
