@@ -46,6 +46,16 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
         }
 
         [TypeFilter(typeof(AuthorizationFilterAttribute), Order = 1)]
+        [HttpGet("get-ddl")]
+        public async Task<IActionResult> GetDDL()
+        {
+            _logger.Information($"FinancialYear/GetDDL ==> requested");
+            CommonResponse response = await _financialYearManager.GetForDDL();
+            _logger.Information($"FinancialYear/GetDDL ==> response entity: {WebUtility.HtmlEncode(JsonConvert.SerializeObject(response, Formatting.None))}");
+            return Ok(response);
+        }
+
+        [TypeFilter(typeof(AuthorizationFilterAttribute), Order = 1)]
         [TypeFilter(typeof(ValidationFilterAttribute), Order = 2)]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] FinYearRequestEntity finYearRequestEntity)

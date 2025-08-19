@@ -12,6 +12,5 @@ namespace COLLECTION_MANAGEMENT_ENTITIES.ResponseEntity
         public string vill_name { get; set; } = null!;
         public string? district { get; set; }
         public string? country { get; set; }
-        public string? status { get; set; }
     }
 }

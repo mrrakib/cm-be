@@ -43,15 +43,15 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                _logger.Information($"OrganizationManager/GetAllAsync ==> request entity: page: {page}, pageSize: {pageSize}");
-                Tuple<List<OrganizationResponseEntity>, int> menus = await _unitOfWork.Villages.GetAllPagedAsync(page, pageSize);
+                _logger.Information($"VillageManager/GetAllAsync ==> request entity: page: {page}, pageSize: {pageSize}");
+                Tuple<List<VillageResponseEntity>, int> menus = await _unitOfWork.Villages.GetAllPagedAsync(page, pageSize);
                 response.data = menus.Item1;
                 response.total_items = menus.Item2;
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/GetAllAsync ==> Error fetching orgs: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/GetAllAsync ==> Error fetching orgs: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -69,7 +69,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
 
                 if (await _unitOfWork.Villages.VillageExistsAsync(villageRequestEntity.vill_name))
                 {
-                    _logger.Information($"OrganizationManager/CreateAsync ==> organization exists with the given name: {villageRequestEntity.vill_name}");
+                    _logger.Information($"VillageManager/CreateAsync ==> village exists with the given name: {villageRequestEntity.vill_name}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.AlreadyExists, commonResponse);
                 }
 
@@ -92,7 +92,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/CreateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/CreateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, commonResponse);
             }
         }
@@ -101,32 +101,30 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                Organization? org = await _unitOfWork.Organizations.GetByIdAsync(id);
-                if (org == null)
+                Village? village = await _unitOfWork.Villages.GetByIdAsync(id);
+                if (village == null)
                 {
-                    _logger.Error($"OrganizationManager/CreateAsync ==> Organization not found with id: {id}");
+                    _logger.Error($"VillageManager/CreateAsync ==> village not found with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
-                _logger.Information($"OrganizationManager/CreateAsync ==> Organization found with id: {id}, Name: {org.Name}");
-                response.data = new OrganizationResponseEntity
+                _logger.Information($"VillageManager/CreateAsync ==> village found with id: {id}, Name: {village.Name}");
+                response.data = new VillageResponseEntity
                 {
-                    id = org.Id,
-                    org_name = org.Name,
-                    mobile_no = org.MobileNo,
-                    email = org.Email,
-                    address = org.Address,
-                    status = Enum.GetName(typeof(CommonEnum.Status), org.Status)
+                    id = village.Id,
+                    vill_name = village.Name,
+                    district = village.District,
+                    country = village.Country
                 };
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/CreateAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/CreateAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
 
-        public async Task<CommonResponse> UpdateAsync(OrganizationRequestEntity organizationRequestEntity)
+        public async Task<CommonResponse> UpdateAsync(VillageRequestEntity villageRequestEntity)
         {
             CommonResponse response = new();
             try
@@ -136,30 +134,29 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 {
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.UserNotFound, response);
                 }
-                Organization? organization = await _unitOfWork.Organizations.GetByIdAsync(organizationRequestEntity.id);
-                if (organization == null)
+                Village? village = await _unitOfWork.Villages.GetByIdAsync(villageRequestEntity.id);
+                if (village == null)
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> no organization found with id: {organizationRequestEntity.id}");
+                    _logger.Information($"VillageManager/UpdateAsync ==> no village found with id: {villageRequestEntity.id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
-                if (await _unitOfWork.Organizations.OrgExistsAsync(organizationRequestEntity.org_name, organization.Id))
+                if (await _unitOfWork.Villages.VillageExistsAsync(villageRequestEntity.vill_name, village.Id))
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> organization exists with the given name: {organizationRequestEntity.org_name}");
+                    _logger.Information($"VillageManager/UpdateAsync ==> village exists with the given name: {villageRequestEntity.vill_name}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.AlreadyExists, response);
                 }
 
-                organization.Name = organizationRequestEntity.org_name;
-                organization.MobileNo = organizationRequestEntity.mobile_no;
-                organization.Email = organizationRequestEntity.email;
-                organization.Address = organizationRequestEntity.address;
-                organization.UpdatedBy = long.Parse(current_user_id);
-                organization.UpdatedAt = DateTime.Now;
-                _unitOfWork.Organizations.Update(organization);
+                village.Name = villageRequestEntity.vill_name;
+                village.District = villageRequestEntity.district;
+                village.Country = villageRequestEntity.country;
+                village.UpdatedBy = long.Parse(current_user_id);
+                village.UpdatedAt = DateTime.Now;
+                _unitOfWork.Villages.Update(village);
 
                 if (await _unitOfWork.CompleteAsync() == 0)
                 {
-                    _logger.Information($"OrganizationManager/UpdateAsync ==> failed to update organization with id: {organizationRequestEntity.id}");
+                    _logger.Information($"VillageManager/UpdateAsync ==> failed to update village with id: {villageRequestEntity.id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.FailedToUpdate, response);
                 }
 
@@ -167,7 +164,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/UpdateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/UpdateAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -177,10 +174,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                var organization = await _unitOfWork.Organizations.GetByIdAsync(id);
-                if (organization == null)
+                Village? village = await _unitOfWork.Villages.GetByIdAsync(id);
+                if (village == null)
                 {
-                    _logger.Information($"OrganizationManager/DeleteAsync ==> no organization found with id: {id}");
+                    _logger.Information($"VillageManager/DeleteAsync ==> no village found with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
@@ -191,10 +188,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 //} 
                 #endregion
 
-                _unitOfWork.Organizations.Delete(organization);
+                _unitOfWork.Villages.Delete(village);
                 if (await _unitOfWork.CompleteAsync() == 0)
                 {
-                    _logger.Information($"OrganizationManager/DeleteAsync ==> failed to delete organization with id: {id}");
+                    _logger.Information($"VillageManager/DeleteAsync ==> failed to delete village with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.FailedToDelete, response);
                 }
 
@@ -202,7 +199,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/DeleteAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/DeleteAsync ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -212,14 +209,14 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
             CommonResponse response = new();
             try
             {
-                List<DropdownResponseEntity> data =  await _unitOfWork.Organizations.GetForDDL();
+                List<DropdownResponseEntity> data =  await _unitOfWork.Villages.GetForDDL();
                 response.data = data;
 
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"OrganizationManager/GetForDDL ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"VillageManager/GetForDDL ==> Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }

@@ -14,7 +14,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
 {
     public interface IVillageRepository : IBaseRepository<Village>
     {
-        Task<Tuple<List<OrganizationResponseEntity>, int>> GetAllPagedAsync(int page, int pageSize);
+        Task<Tuple<List<VillageResponseEntity>, int>> GetAllPagedAsync(int page, int pageSize);
         Task<bool> VillageExistsAsync(string orgName, long id = 0);
         Task<List<DropdownResponseEntity>> GetForDDL();
     }
@@ -27,46 +27,36 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<Tuple<List<OrganizationResponseEntity>, int>> GetAllPagedAsync(int page, int pageSize)
+        public async Task<Tuple<List<VillageResponseEntity>, int>> GetAllPagedAsync(int page, int pageSize)
         {
-            var query = _dbContext.Organizations.Select(o => new OrganizationResponseEntity
+            var query = _dbContext.Villages.Select(o => new VillageResponseEntity
             {
                 id = o.Id,
-                org_name = o.Name,
-                mobile_no = o.MobileNo,
-                email = o.Email,
-                address = o.Address,
-                status = o.Status.ToString()
+                vill_name = o.Name,
+                district = o.District,
+                country = o.Country
             });
             int totalCount = await query.CountAsync();
-            var orgs = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var result = orgs.Select(o => new OrganizationResponseEntity
-            {
-                id = o.id,
-                org_name = o.org_name,
-                mobile_no = o.mobile_no,
-                email = o.email,
-                address = o.address,
-                status = !string.IsNullOrWhiteSpace(o.status) ? Enum.GetName(typeof(CommonEnum.Status), Convert.ToInt16(o.status)) : string.Empty
-            }).ToList();
-            return new Tuple<List<OrganizationResponseEntity>, int>(result, totalCount);
+            var vilalges = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            
+            return new Tuple<List<VillageResponseEntity>, int>(vilalges, totalCount);
         }
 
         public async Task<bool> VillageExistsAsync(string orgName, long id = 0)
         {
-            return await _dbContext.Organizations.AnyAsync(d => !string.IsNullOrWhiteSpace(d.Name) && (id != 0 ? d.Id != id : true) && d.Name.ToLower().Equals(orgName.Trim().ToLower()));
+            return await _dbContext.Villages.AnyAsync(d => !string.IsNullOrWhiteSpace(d.Name) && (id != 0 ? d.Id != id : true) && d.Name.ToLower().Equals(orgName.Trim().ToLower()));
         }
 
         public async Task<List<DropdownResponseEntity>> GetForDDL()
         {
-            var organizations = await _dbContext.Organizations
+            var villages = await _dbContext.Villages
                 .Select(o => new DropdownResponseEntity
                 {
                     id = o.Id,
                     name = o.Name
                 })
                 .ToListAsync();
-            return organizations;
+            return villages;
         }
     }
 }
