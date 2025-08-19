@@ -82,7 +82,8 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     contact_no = user.ContactNo,
                     user_name = user.UserName,
                     email = user.Email,
-                    full_name = user.FullName
+                    full_name = user.FullName,
+                    organization_id = user.OrganizationId
                 };
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }

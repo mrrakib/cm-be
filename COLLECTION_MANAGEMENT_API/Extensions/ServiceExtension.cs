@@ -20,6 +20,7 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
                 services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
                 services.AddScoped<ICollectionTypeRepository, CollectionTypeRepository>();
                 services.AddScoped<IVillageRepository, VillageRepository>();
+                services.AddScoped<IMemberRepository, MemberRepository>();
 
                 return services;
             }
@@ -47,6 +48,7 @@ namespace COLLECTION_MANAGEMENT_API.Extensions
                 services.AddScoped<IFinancialYearManager, FinancialYearManager>();
                 services.AddScoped<ICollectionTypeManager, CollectionTypeManager>();
                 services.AddScoped<IVillageManager, VillageManager>();
+                services.AddScoped<IMemberManager, MemberManager>();
 
                 return services;
             }
