@@ -29,6 +29,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         IOrganizationRepository Organizations { get; }
         IFinancialYearRepository FinancialYears { get; }
         ICollectionTypeRepository CollectionTypes { get; }
+        IVillageRepository Villages { get; }
 
     }
 
@@ -56,6 +57,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
             Organizations = new OrganizationRepository(_context);
             FinancialYears = new FinancialYearRepository(_context);
             CollectionTypes = new CollectionTypeRepository(_context);
+            Villages = new VillageRepository(_context);
         }
         public void SetActiveContext(CommonEnum.ContextName contextName)
         {
@@ -147,6 +149,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         public IOrganizationRepository Organizations { get; }
         public IFinancialYearRepository FinancialYears { get; }
         public ICollectionTypeRepository CollectionTypes { get; }
+        public IVillageRepository Villages { get; }
         #endregion
 
     }
