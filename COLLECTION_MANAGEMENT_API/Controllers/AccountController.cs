@@ -33,8 +33,9 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
         private readonly ICommonManager _commonManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<long>> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, ICommonManager commonManager, IUnitOfWork unitOfWork, ILogger logger)
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<long>> roleManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, ICommonManager commonManager, IUnitOfWork unitOfWork, ILogger logger, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -43,6 +44,7 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
             _commonManager = commonManager;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [TypeFilter(typeof(ValidationFilterAttribute), Order = 1)]
@@ -132,6 +134,12 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
                 {
                     return Ok(response);
                 }
+                //string? org_id = _httpContextAccessor.HttpContext?.Session?.GetString("org_id");
+                //if (user.OrganizationId.HasValue && string.IsNullOrWhiteSpace(org_id))
+                //{
+                //    _httpContextAccessor.HttpContext?.Session?.SetString("org_id", user.OrganizationId.Value.ToString());
+                //}
+                
                 return Ok(await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response));
             }
             catch (Exception ex)
@@ -191,9 +199,11 @@ namespace COLLECTION_MANAGEMENT_API.Controllers
                     _logger.Information($"AccountController/GenerateJwtToken ==> role not assigned for user {user.UserName}");
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.RoleNotFound, response);
                 }
+                long org_id = user.OrganizationId ?? 0;
                 var claims = new List<Claim>
                 {
                     new Claim("user_id", user.Id.ToString()), // Set Name claim directly
+                    new Claim("org_id", org_id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("role_name", roles[0])

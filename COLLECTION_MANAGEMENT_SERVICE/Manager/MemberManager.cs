@@ -69,6 +69,12 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.UserNotFound, commonResponse);
                 }
 
+                string? currentOrganizationId = _commonManager.GetCurrentOrgId();
+                if (string.IsNullOrWhiteSpace(currentOrganizationId))
+                {
+                    return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.OrganizationNotFound, commonResponse);
+                }
+
                 if (await _unitOfWork.Villages.GetByIdAsync(memberRequestEntity.village_id) == null)
                 {
                     _logger.Information($"MemberManager/CreateAsync ==> Village not found using village id: {memberRequestEntity.village_id}");
@@ -84,7 +90,7 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     Email = memberRequestEntity.email?.Trim(),
                     Address = memberRequestEntity.address?.Trim(),
                     VillageId = memberRequestEntity.village_id,
-                    OrgId = user?.OrganizationId ?? 0,
+                    OrgId = long.Parse(currentOrganizationId),
                     CreatedBy = long.Parse(currentUserId)
                 };
 

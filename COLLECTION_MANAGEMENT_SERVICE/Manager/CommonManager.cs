@@ -138,6 +138,10 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirst("user_id")?.Value;
         }
+        public string? GetCurrentOrgId()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst("org_id")?.Value;
+        }
         private string GenerateRandomDigits(int length)
         {
             Random random = new Random();

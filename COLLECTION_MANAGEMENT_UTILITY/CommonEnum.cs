@@ -50,7 +50,8 @@ namespace COLLECTION_MANAGEMENT_UTILITY
             DependencyFound = 6032,
             AlreadyProcessed = 6033,
             NoCheckinFound = 6034,
-            UndefinedValue = 6035
+            UndefinedValue = 6035,
+            OrganizationNotFound = 6036
         }
 
         public enum ContextName

@@ -11,5 +11,6 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Interface
     {
         Task<CommonResponse> HandleResponse(int httpStatusCodeEnum, int errorCode, CommonResponse responseEntity, string tag = "", string custom_message = "", int? custom_code = null);
         string? GetCurrentUserId();
+        string? GetCurrentOrgId();
     }
 }
