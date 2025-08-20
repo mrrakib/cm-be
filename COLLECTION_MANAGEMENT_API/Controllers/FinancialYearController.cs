@@ -10,7 +10,7 @@ using ILogger = Serilog.ILogger;
 
 namespace COLLECTION_MANAGEMENT_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/fy")]
     [ApiController]
     public class FinancialYearController : ControllerBase
     {

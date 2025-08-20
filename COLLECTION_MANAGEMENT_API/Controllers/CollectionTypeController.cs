@@ -10,7 +10,7 @@ using ILogger = Serilog.ILogger;
 
 namespace COLLECTION_MANAGEMENT_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/collection-type")]
     [ApiController]
     public class CollectionTypeController : ControllerBase
     {

@@ -70,6 +70,8 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.Repository
                 email = u.email,
                 birth_date = u.birth_date,
                 organization_name = u.organization_name,
+                organization_id = u.organization_id,
+                contact_no = u.contact_no ?? string.Empty
             }).ToList();
             return new Tuple<List<UserResponseEntity>, int>(users, totalCount);
         }

@@ -192,7 +192,9 @@ public partial class am_dbcontext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("name");
             entity.Property(e => e.OrgId).HasColumnName("org_id");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");

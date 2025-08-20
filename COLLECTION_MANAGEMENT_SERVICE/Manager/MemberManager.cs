@@ -69,9 +69,9 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     return await _commonManager.HandleResponse(StatusCodes.Status422UnprocessableEntity, (int)CommonEnum.ResponseCodes.UserNotFound, commonResponse);
                 }
 
-                if (await _unitOfWork.Members.GetByIdAsync(memberRequestEntity.village_id) == null)
+                if (await _unitOfWork.Villages.GetByIdAsync(memberRequestEntity.village_id) == null)
                 {
-                    _logger.Information($"MemberManager/CreateAsync ==> Member not found using Member id: {memberRequestEntity.village_id}");
+                    _logger.Information($"MemberManager/CreateAsync ==> Village not found using village id: {memberRequestEntity.village_id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, commonResponse);
                 }
 
@@ -110,12 +110,12 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                 Member? member = await _unitOfWork.Members.GetByIdAsync(id);
                 if (member == null)
                 {
-                    _logger.Error($"MemberManager/CreateAsync ==> Member not found with id: {id}");
+                    _logger.Error($"MemberManager/GetByIdAsync ==> Member not found with id: {id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
-                _logger.Information($"MemberManager/CreateAsync ==> Member found with id: {id}, Name: {member.Name}");
+                _logger.Information($"MemberManager/GetByIdAsync ==> Member found with id: {id}, Name: {member.Name}");
 
-                Member? Member = await _unitOfWork.Members.GetByIdAsync(member.VillageId);
+                Village? village = await _unitOfWork.Villages.GetByIdAsync(member.VillageId);
 
                 response.data = new MemberResponseEntity
                 {
@@ -124,15 +124,15 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     contact_no = member.ContactNo,
                     email = member.Email,
                     address = member.Address,
-                    village_id = Member?.Id,
-                    village_name = Member?.Name,
+                    village_id = village?.Id,
+                    village_name = village?.Name,
                     status = Enum.GetName(typeof(CommonEnum.Status), member.Status)
                 };
                 return await _commonManager.HandleResponse(StatusCodes.Status200OK, (int)CommonEnum.ResponseCodes.Success, response);
             }
             catch (Exception ex)
             {
-                _logger.Error($"MemberManager/CreateAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
+                _logger.Error($"MemberManager/GetByIdAsync ==>  Error: {WebUtility.HtmlEncode(ex.ToString())}");
                 return await _commonManager.HandleResponse(StatusCodes.Status500InternalServerError, (int)CommonEnum.ResponseCodes.InternalServerError, response);
             }
         }
@@ -154,9 +154,9 @@ namespace COLLECTION_MANAGEMENT_SERVICE.Manager
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
-                if (await _unitOfWork.Members.GetByIdAsync(memberRequestEntity.village_id) == null)
+                if (await _unitOfWork.Villages.GetByIdAsync(memberRequestEntity.village_id) == null)
                 {
-                    _logger.Information($"MemberManager/CreateAsync ==> Member not found using Member id: {memberRequestEntity.village_id}");
+                    _logger.Information($"MemberManager/CreateAsync ==> Village not found using Village id: {memberRequestEntity.village_id}");
                     return await _commonManager.HandleResponse(StatusCodes.Status404NotFound, (int)CommonEnum.ResponseCodes.NotFound, response);
                 }
 
