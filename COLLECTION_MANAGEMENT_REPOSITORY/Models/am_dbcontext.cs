@@ -19,6 +19,8 @@ public partial class am_dbcontext : DbContext
 
     public virtual DbSet<Collection> Collections { get; set; }
 
+    public virtual DbSet<CollectionConfiguration> CollectionConfigurations { get; set; }
+
     public virtual DbSet<CollectionType> CollectionTypes { get; set; }
 
     public virtual DbSet<EfmigrationsHistory> EfmigrationsHistories { get; set; }
@@ -109,6 +111,35 @@ public partial class am_dbcontext : DbContext
                 .HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
             entity.Property(e => e.Year).HasColumnName("year");
+        });
+
+        modelBuilder.Entity<CollectionConfiguration>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("collection_configuration");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CollectionAmount)
+                .HasPrecision(18, 4)
+                .HasColumnName("collection_amount");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.FromMonth).HasColumnName("from_month");
+            entity.Property(e => e.FromYear).HasColumnName("from_year");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
+            entity.Property(e => e.ToMonth).HasColumnName("to_month");
+            entity.Property(e => e.ToYear).HasColumnName("to_year");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
         });
 
         modelBuilder.Entity<CollectionType>(entity =>
