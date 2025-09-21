@@ -31,6 +31,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         ICollectionTypeRepository CollectionTypes { get; }
         IVillageRepository Villages { get; }
         IMemberRepository Members { get; }
+        IMembersBillRepository MembersBill { get; }
 
     }
 
@@ -60,6 +61,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
             CollectionTypes = new CollectionTypeRepository(_context);
             Villages = new VillageRepository(_context);
             Members = new MemberRepository(_context);
+            MembersBill = new MembersBillRepository(_context);
         }
         public void SetActiveContext(CommonEnum.ContextName contextName)
         {
@@ -153,6 +155,7 @@ namespace COLLECTION_MANAGEMENT_REPOSITORY.UoW
         public ICollectionTypeRepository CollectionTypes { get; }
         public IVillageRepository Villages { get; }
         public IMemberRepository Members { get; }
+        public IMembersBillRepository MembersBill { get; }
         #endregion
 
     }

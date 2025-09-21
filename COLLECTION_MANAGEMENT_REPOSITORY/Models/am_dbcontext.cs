@@ -29,6 +29,12 @@ public partial class am_dbcontext : DbContext
 
     public virtual DbSet<Member> Members { get; set; }
 
+    public virtual DbSet<MemberWiseBill> MemberWiseBills { get; set; }
+
+    public virtual DbSet<MembersBill> MembersBills { get; set; }
+
+    public virtual DbSet<MembersPreviousDue> MembersPreviousDues { get; set; }
+
     public virtual DbSet<Menu> Menus { get; set; }
 
     public virtual DbSet<MenuPermission> MenuPermissions { get; set; }
@@ -83,10 +89,10 @@ public partial class am_dbcontext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BillAmount)
-                .HasPrecision(10, 4)
+                .HasPrecision(18, 2)
                 .HasColumnName("bill_amount");
             entity.Property(e => e.CollectionAmount)
-                .HasPrecision(10, 4)
+                .HasPrecision(18, 2)
                 .HasColumnName("collection_amount");
             entity.Property(e => e.CollectionDate)
                 .HasColumnType("datetime")
@@ -103,9 +109,12 @@ public partial class am_dbcontext : DbContext
                 .HasColumnName("invoice_no");
             entity.Property(e => e.IsPaid).HasColumnName("is_paid");
             entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.MemberWiseBillId).HasColumnName("member_wise_bill_id");
             entity.Property(e => e.Month).HasColumnName("month");
             entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
@@ -231,6 +240,100 @@ public partial class am_dbcontext : DbContext
                 .HasColumnName("updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
             entity.Property(e => e.VillageId).HasColumnName("village_id");
+        });
+
+        modelBuilder.Entity<MemberWiseBill>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("member_wise_bill");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.IsDue).HasColumnName("is_due");
+            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.MembersBillId).HasColumnName("members_bill_id");
+            entity.Property(e => e.Month).HasColumnName("month");
+            entity.Property(e => e.PaymentAmount)
+                .HasPrecision(18, 2)
+                .HasColumnName("payment_amount");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.Year).HasColumnName("year");
+        });
+
+        modelBuilder.Entity<MembersBill>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("members_bill");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Amount)
+                .HasPrecision(18, 2)
+                .HasColumnName("amount");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.FromDate)
+                .HasColumnType("datetime")
+                .HasColumnName("from_date");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.OrgId).HasColumnName("org_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
+            entity.Property(e => e.ToDate)
+                .HasColumnType("datetime")
+                .HasColumnName("to_date");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+        });
+
+        modelBuilder.Entity<MembersPreviousDue>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("members_previous_dues");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.RemainingDue)
+                .HasPrecision(18, 2)
+                .HasColumnName("remaining_due");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("status");
+            entity.Property(e => e.TotalDue)
+                .HasPrecision(18, 2)
+                .HasColumnName("total_due");
+            entity.Property(e => e.TotalMonth).HasColumnName("total_month");
+            entity.Property(e => e.TotalPaid)
+                .HasPrecision(18, 2)
+                .HasColumnName("total_paid");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
         });
 
         modelBuilder.Entity<Menu>(entity =>

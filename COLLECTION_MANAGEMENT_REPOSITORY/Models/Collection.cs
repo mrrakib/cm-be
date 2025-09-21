@@ -29,6 +29,8 @@ public partial class Collection
 
     public long OrganizationId { get; set; }
 
+    public long? MemberWiseBillId { get; set; }
+
     public int Status { get; set; }
 
     public DateTime CreatedAt { get; set; }
